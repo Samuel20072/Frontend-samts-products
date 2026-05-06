@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>SAMTS — Agregar Producto</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface2: #1e1e1e;
+            --border: rgba(255, 255, 255, 0.08);
+            --border2: rgba(255, 255, 255, 0.15);
+            --text: #f0f0f0;
+            --muted: #888;
+            --accent: #c8f135;
+            --accent-dark: #9abe1a;
+            --danger: #ff5c5c;
+            --success: #4ade80;
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            min-height: 100vh;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 0 80px;
+        }
+
+        .header {
+            padding: 52px 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            color: var(--accent);
+        }
+
+        .header-badge {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--muted);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .section {
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .foto-zone {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: var(--surface);
+            border: 1.5px dashed var(--border2);
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .foto-zone:active {
+            background: var(--surface2);
+            border-color: var(--accent);
+        }
+
+        .foto-zone img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+
+        .foto-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: var(--radius);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .foto-zone:has(img):hover .foto-overlay {
+            opacity: 1;
+        }
+
+        .foto-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--surface2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .foto-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--accent);
+            fill: none;
+        }
+
+        .foto-text {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .foto-text strong {
+            color: var(--text);
+            display: block;
+            font-weight: 500;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            padding: 12px 14px;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .field select option {
+            background: #1e1e1e;
+            color: var(--text);
+        }
+
+        .field textarea {
+            resize: none;
+            line-height: 1.5;
+        }
+
+        .prefix-field {
+            position: relative;
+        }
+
+        .prefix {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .prefix-field input {
+            padding-left: 30px;
+        }
+
+        .btn-main {
+            width: calc(100% - 40px);
+            margin: 0 20px;
+            padding: 16px;
+            background: var(--accent);
+            color: #0a0a0a;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: transform 0.15s, background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-main:active {
+            transform: scale(0.97);
+            background: var(--accent-dark);
+        }
+
+        .btn-main:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-main svg {
+            width: 18px;
+            height: 18px;
+            stroke: #0a0a0a;
+            fill: none;
+        }
+
+        .status-card {
+            margin: 0 20px;
+            padding: 16px;
+            border-radius: var(--radius);
+            display: none;
+            margin-top: 16px;
+        }
+
+        .status-card.show {
+            display: block;
+        }
+
+        .status-card.loading {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+        }
+
+        .status-card.success {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .status-card.error {
+            background: rgba(255, 92, 92, 0.1);
+            border: 1px solid rgba(255, 92, 92, 0.3);
+        }
+
+        .status-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .status-card.loading .status-title {
+            color: var(--text);
+        }
+
+        .status-card.success .status-title {
+            color: var(--success);
+        }
+
+        .status-card.error .status-title {
+            color: var(--danger);
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            transition: color 0.3s;
+        }
+
+        .step.active {
+            color: var(--text);
+        }
+
+        .step.done {
+            color: var(--success);
+        }
+
+        .step-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--border2);
+            flex-shrink: 0;
+            transition: background 0.3s;
+        }
+
+        .step.active .step-dot {
+            background: var(--accent);
+        }
+
+        .step.done .step-dot {
+            background: var(--success);
+        }
+
+        .result-preview {
+            display: none;
+            margin: 0 20px;
+            margin-top: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .result-preview.show {
+            display: block;
+        }
+
+        .result-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .result-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .result-brand {
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .result-body {
+            padding: 14px 16px;
+        }
+
+        .result-desc {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            font-size: 11px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .result-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-price {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .result-stock {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-top-color: #0a0a0a;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .config-hint {
+            margin: 0 20px 20px;
+            padding: 12px 14px;
+            background: rgba(200, 241, 53, 0.06);
+            border: 1px solid rgba(200, 241, 53, 0.2);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: rgba(200, 241, 53, 0.7);
+            line-height: 1.5;
+        }
+
+        .config-hint strong {
+            color: var(--accent);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 20px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+
+        <div class="header">
+            <span class="logo">SAMTS</span>
+            <span class="header-badge">Panel productos</span>
+        </div>
+        <div class="section">
+            <div class="section-label">Foto del producto</div>
+            <div class="foto-zone" id="fotoZone" onclick="document.getElementById('fileInput').click()">
+                <div class="foto-icon">
+                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                    </svg>
+                </div>
+                <div class="foto-text">
+                    <strong>Tomar o subir foto</strong>
+                    Toca para abrir la cámara
+                </div>
+                <div class="foto-overlay" id="fotoOverlay">
+                    <div class="foto-icon">
+                        <svg viewBox="0 0 24 24" stroke-width="1.5">
+                            <path
+                                d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                            <circle cx="12" cy="13" r="4" />
+                        </svg>
+                    </div>
+                    <span style="font-size:13px;color:#fff;">Cambiar foto</span>
+                </div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFoto(this)">
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Precio y stock -->
+        <div class="section">
+            <div class="section-label">Precio y stock</div>
+            <div class="row">
+                <div class="field">
+                    <label>Precio</label>
+                    <div class="prefix-field">
+                        <span class="prefix">$</span>
+                        <input type="number" id="precio" placeholder="9500" inputmode="numeric">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Stock</label>
+                    <input type="number" id="stock" placeholder="17" inputmode="numeric">
+                </div>
+                <div class="field">
+                    <label>Presentación</label>
+                    <input type="text" id="presentacion" placeholder="150ml, 200g...">
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Opcionales -->
+        <div class="section">
+            <div class="section-label">Info adicional (opcional)</div>
+            <div class="field">
+                <label>Categoría (si la sabes)</label>
+                <input type="text" id="categoria" placeholder="Ej: Tratamiento capilar">
+            </div>
+            <div style="margin-top:12px">
+                <div class="field">
+                    <label>Notas extra para la IA</label>
+                    <textarea id="notas" rows="2"
+                        placeholder="Ej: es para cabello teñido, trae aplicador incluido..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón -->
+        <button class="btn-main" id="btnCrear" onclick="crearProducto()">
+            <svg viewBox="0 0 24 24" stroke-width="2">
+                <path d="M12 5v14M5 12h14" />
+            </svg>
+            Crear producto con IA
+        </button>
+
+        <!-- Status -->
+        <div class="status-card loading" id="statusCard">
+            <div class="status-title" id="statusTitle">Analizando imagen...</div>
+            <div class="steps" id="stepsContainer">
+                <div class="step" id="step1">
+                    <div class="step-dot"></div>Analizando imagen con Gemini
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-dot"></div>Generando descripción del producto
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-dot"></div>Guardando en la base de datos
+                </div>
+            </div>
+            <div id="errorMsg" style="font-size:13px;color:#ff5c5c;margin-top:10px;display:none;line-height:1.4;"></div>
+        </div>
+
+        <!-- Preview resultado -->
+        <div class="result-preview" id="resultPreview">
+            <div id="rImagenContainer" style="display:none; text-align:center; padding-top:14px;">
+                <img id="rImagen" style="max-height: 150px; border-radius: var(--radius-sm);">
+            </div>
+            <div class="result-header">
+                <div>
+                    <div class="result-name" id="rNombre"></div>
+                    <div class="result-brand" id="rMarca"></div>
+                </div>
+            </div>
+            <div class="result-body">
+                <div class="result-desc" id="rDesc"></div>
+                <div class="result-tags" id="rTags"></div>
+            </div>
+            <div class="result-footer">
+                <div class="result-price" id="rPrecio"></div>
+                <div class="result-stock" id="rStock"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const GEMINI_API_KEY = 'AIzaSyBarKKzGDWgd1EXupqjYSwt7pTqmWJ6rGc';
+        const BACKEND_URL = 'http://localhost:3001/api/productos';
+
+        let imagenBase64 = null;
+        let imagenMimeType = null;
+
+        function handleFoto(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imgObj = new Image();
+                imgObj.onload = () => {
+                    // Redimensionar para ahorrar ancho de banda y evitar límites de payload
+                    const canvas = document.createElement('canvas');
+                    let width = imgObj.width;
+                    let height = imgObj.height;
+                    const max = 1024; // Tamaño máximo razonable para IA
+
+                    if (width > height) {
+                        if (width > max) { height *= max / width; width = max; }
+                    } else {
+                        if (height > max) { width *= max / height; height = max; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(imgObj, 0, 0, width, height);
+
+                    const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    imagenBase64 = resizedDataUrl.split(',')[1];
+                    imagenMimeType = 'image/jpeg';
+
+                    const zone = document.getElementById('fotoZone');
+                    let img = zone.querySelector('img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        zone.appendChild(img);
+                    }
+                    img.src = resizedDataUrl;
+                    zone.querySelector('.foto-icon').style.display = 'none';
+                    zone.querySelector('.foto-text').style.display = 'none';
+                    document.getElementById('fotoOverlay').style.opacity = '1';
+                };
+                imgObj.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setStep(n, state) {
+            const el = document.getElementById('step' + n);
+            if (el) el.className = 'step ' + state;
+        }
+
+        async function crearProducto() {
+            if (!imagenBase64) { alert('Por favor toma o sube una foto del producto'); return; }
+            const precio = document.getElementById('precio').value;
+            const stock = document.getElementById('stock').value;
+            if (!precio) { alert('Ingresa el precio del producto'); return; }
+            if (!stock) { alert('Ingresa el stock disponible'); return; }
+
+            const btn = document.getElementById('btnCrear');
+            btn.disabled = true;
+
+            const statusCard = document.getElementById('statusCard');
+            const errorMsg = document.getElementById('errorMsg');
+            statusCard.className = 'status-card loading show';
+            errorMsg.style.display = 'none';
+            document.getElementById('statusTitle').textContent = 'Procesando con IA...';
+            document.getElementById('resultPreview').className = 'result-preview';
+
+            setStep(1, 'active'); setStep(2, ''); setStep(3, '');
+
+            try {
+                const categoria = document.getElementById('categoria').value;
+                const notas = document.getElementById('notas').value;
+                const presentacionInput = document.getElementById('presentacion').value;
+
+                const prompt = `Eres un experto en productos de belleza. Analiza la imagen y devuelve un JSON con estos campos: nombre (string), marca (string), descripcion (string de 2-3 oraciones para ecommerce), categoria (string${categoria ? ', sugerencia: ' + categoria : ''}), tags (array de 5 strings), sku (string con letras de marca+nombre y 4 digitos), presentacion (string: cantidad o presentación del empaque como 150ml o 200g. ${presentacionInput ? 'Sugerencia: ' + presentacionInput + '.' : 'Detectarlo de la imagen.'} Si no se ve usar "Unidad"), imagen_url (string o null: una URL real de internet de alta calidad de este producto específico, terminada en .jpg, .png o .webp. Si no encuentras una confiable devuelve null). ${notas ? 'Nota: ' + notas : ''}`;
+
+                const geminiRes = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inline_data: { mime_type: imagenMimeType, data: imagenBase64 } }
+                                ]
+                            }],
+                            generationConfig: {
+                                temperature: 0.1,
+                                maxOutputTokens: 1024,
+                                responseMimeType: "application/json"
+                            }
+                        })
+                    }
+                );
+
+                if (geminiRes.status === 429) {
+                    throw new Error('Demasiadas peticiones. Por favor, espera 60 segundos antes de intentar de nuevo.');
+                }
+                if (!geminiRes.ok) throw new Error('Error en Gemini API: ' + geminiRes.status);
+                const geminiData = await geminiRes.json();
+                const rawText = geminiData.candidates[0].content.parts[0].text;
+                const cleanText = rawText.replace(/```json|```/g, '').trim();
+                const producto = JSON.parse(cleanText);
+
+                setStep(1, 'done'); setStep(2, 'active');
+
+                const payload = {
+                    nombre: producto.nombre,
+                    marca: producto.marca,
+                    descripcion: producto.descripcion,
+                    categoria: producto.categoria,
+                    tags: producto.tags,
+                    sku: producto.sku,
+                    precio: parseInt(precio),
+                    stock: parseInt(stock),
+                    presentacion: producto.presentacion,
+                    imagen_url: producto.imagen_url
+                };
+
+                if (!producto.imagen_url) {
+                    payload.imagenBase64 = imagenBase64;
+                    payload.imagenMimeType = imagenMimeType;
+                }
+
+                setStep(2, 'done'); setStep(3, 'active');
+
+                const backendRes = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!backendRes.ok) throw new Error('Error al guardar: ' + backendRes.status);
+
+                setStep(3, 'done');
+                statusCard.className = 'status-card success show';
+                document.getElementById('statusTitle').textContent = '¡Producto creado exitosamente!';
+
+                document.getElementById('rNombre').textContent = producto.nombre;
+                document.getElementById('rMarca').textContent = producto.marca;
+                document.getElementById('rDesc').textContent = producto.descripcion;
+                document.getElementById('rPrecio').textContent = '$' + parseInt(precio).toLocaleString('es-CO');
+                document.getElementById('rStock').textContent = stock + ' unidades en stock';
+
+                if (producto.imagen_url) {
+                    document.getElementById('rImagen').src = producto.imagen_url;
+                    document.getElementById('rImagenContainer').style.display = 'block';
+                } else {
+                    document.getElementById('rImagenContainer').style.display = 'none';
+                }
+
+                const tagsEl = document.getElementById('rTags');
+                tagsEl.innerHTML = '';
+                (producto.tags || []).forEach(t => {
+                    const span = document.createElement('span');
+                    span.className = 'tag';
+                    span.textContent = t;
+                    tagsEl.appendChild(span);
+                });
+
+                document.getElementById('resultPreview').className = 'result-preview show';
+
+                setTimeout(() => {
+                    document.getElementById('precio').value = '';
+                    document.getElementById('stock').value = '';
+                    document.getElementById('presentacion').value = '';
+                    document.getElementById('categoria').value = '';
+                    document.getElementById('notas').value = '';
+                    const zone = document.getElementById('fotoZone');
+                    const img = zone.querySelector('img');
+                    if (img) img.remove();
+                    zone.querySelector('.foto-icon').style.display = '';
+                    zone.querySelector('.foto-text').style.display = '';
+                    document.getElementById('fotoOverlay').style.opacity = '0';
+                    imagenBase64 = null;
+                }, 3000);
+
+            } catch (err) {
+                console.error(err);
+                statusCard.className = 'status-card error show';
+                document.getElementById('statusTitle').textContent = 'Error';
+                const errorMsg = document.getElementById('errorMsg');
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+            }
+
+            btn.disabled = false;
+        }
+    </script>
+</body>
+
+</html>
