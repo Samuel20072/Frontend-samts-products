@@ -702,7 +702,7 @@
                 const prompt = `Eres un experto en productos de belleza. Analiza la imagen y devuelve un JSON con estos campos: nombre (string), marca (string), descripcion (string de 2-3 oraciones para ecommerce), categoria (string${categoria ? ', sugerencia: ' + categoria : ''}), tags (array de 5 strings), sku (string con letras de marca+nombre y 4 digitos), presentacion (string: cantidad o presentación del empaque como 150ml o 200g. ${presentacionInput ? 'Sugerencia: ' + presentacionInput + '.' : 'Detectarlo de la imagen.'} Si no se ve usar "Unidad"), imagen_url (string o null: una URL real de internet de alta calidad de este producto específico, terminada en .jpg, .png o .webp. Si no encuentras una confiable devuelve null). ${notas ? 'Nota: ' + notas : ''}`;
 
                 const geminiRes = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
